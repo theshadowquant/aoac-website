@@ -1,0 +1,14 @@
+{
+  "name": "anusha-online-art-class",
+  "version": "1.0.0",
+  "description": "Anusha Online Art Class - Official Website",
+  "scripts": {
+    "dev": "npx serve public -p 3000",
+    "build": "echo 'Static site - no build needed'",
+    "start": "npx serve public -p 3000"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

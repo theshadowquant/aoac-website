@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Anusha Online Art Class — Girinagar, Bangalore</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink: #1a1008;
+    --cream: #fdf6ed;
+    --gold: #c8922a;
+    --gold-light: #e8b84b;
+    --terracotta: #c2553a;
+    --sage: #6b8c6e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "DM Sans", sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+  .playfair { font-family: "Playfair Display", serif; }
+
+  .hero-bg {
+    background: linear-gradient(135deg, #1a1008 0%, #2d1a08 30%, #3d2410 60%, #1a1008 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero-bg::before {
+    content: "";
+    position: absolute; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,146,42,0.22) 0%, transparent 70%);
+    top: -120px; right: -100px;
+    animation: float 9s ease-in-out infinite;
+  }
+  .hero-bg::after {
+    content: "";
+    position: absolute; width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(194,85,58,0.18) 0%, transparent 70%);
+    bottom: -80px; left: 5%;
+    animation: float 11s ease-in-out infinite reverse;
+  }
+  @keyframes float { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-28px) scale(1.04); } }
+
+  .brush-ul { position: relative; display: inline-block; }
+  .brush-ul::after {
+    content: "";
+    position: absolute; bottom: -4px; left: 0;
+    width: 100%; height: 8px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'%3E%3Cpath d='M0,6 C30,2 60,10 100,6 C140,2 170,10 200,6' stroke='%23c8922a' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, #c8922a 0%, #e8b84b 50%, #c8922a 100%);
+    background-size: 200% 100%;
+    transition: background-position 0.4s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden; position: relative;
+  }
+  .btn-gold:hover {
+    background-position: 100% 0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(200,146,42,0.4);
+  }
+
+  .btn-wa {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,211,102,0.4); }
+
+  .card-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .card-lift:hover { transform: translateY(-5px); box-shadow: 0 16px 50px rgba(26,16,8,0.13); }
+
+  .divider-brush { width: 70px; height: 3px; background: linear-gradient(90deg, #c8922a, #c2553a); border-radius: 2px; }
+
+  .urgency-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; display: inline-block; }
+  @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.4); } }
+
+  /* Gallery masonry-like grid */
+  .gallery-grid {
+    columns: 2;
+    column-gap: 12px;
+  }
+  @media(min-width:640px) { .gallery-grid { columns: 3; } }
+  @media(min-width:1024px) { .gallery-grid { columns: 4; } }
+  .gallery-item {
+    break-inside: avoid;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .gallery-item img { width: 100%; display: block; transition: transform 0.4s ease; }
+  .gallery-item:hover img { transform: scale(1.04); }
+  .gallery-item .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,16,8,0.7) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.3s ease;
+    display: flex; align-items: flex-end; padding: 12px;
+  }
+  .gallery-item:hover .overlay { opacity: 1; }
+
+  /* Lightbox */
+  #lightbox {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.92);
+    display: none; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  #lightbox.active { display: flex; }
+  #lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 12px; object-fit: contain; }
+
+  /* Google review card */
+  .review-card {
+    background: white; border-radius: 16px;
+    border: 1px solid rgba(200,146,42,0.15);
+    padding: 24px; position: relative; overflow: hidden;
+  }
+  .review-card::before {
+    content: '"'; font-family: "Playfair Display", serif;
+    font-size: 100px; color: rgba(200,146,42,0.07);
+    position: absolute; top: -15px; left: 8px; line-height: 1;
+  }
+
+  .fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  .wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 998; animation: wa-bounce 3s ease-in-out infinite; }
+  @keyframes wa-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+  nav { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+  /* Timeline dots */
+  .timeline-dot { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #c8922a, #e8b84b); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 13px; shrink: 0; flex-shrink: 0; }
+
+  /* Phase cards */
+  .phase-card { border-radius: 16px; overflow: hidden; position: relative; aspect-ratio: 1; }
+  .phase-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+  .phase-card:hover img { transform: scale(1.06); }
+  .phase-card .label { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; background: linear-gradient(to top, rgba(26,16,8,0.85) 0%, transparent 100%); color: white; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
+
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #c8922a; box-shadow: 0 0 0 3px rgba(200,146,42,0.15); }
+
+  .stars { color: #e8b84b; }
+  .google-logo { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; font-size: 13px; }
+  .g-blue { color: #4285F4; }
+  .g-red { color: #EA4335; }
+  .g-yellow { color: #FBBC04; }
+  .g-green { color: #34A853; }
+
+  /* Pie chart CSS */
+  .pie-wrap { position: relative; width: 200px; height: 200px; border-radius: 50%; }
+  @keyframes spin-in { from { transform: rotate(-90deg); opacity: 0; } to { transform: rotate(0); opacity: 1; } }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 border-b border-amber-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-600 to-amber-900 flex items-center justify-center">
+        <span class="text-white font-black text-sm playfair italic">A</span>
+      </div>
+      <div>
+        <p class="playfair font-bold text-base text-amber-900 leading-tight">ANUSHA</p>
+        <p class="text-[9px] text-stone-400 uppercase tracking-widest leading-none">Online Art Class</p>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium text-stone-600">
+      <a href="#gallery" class="hover:text-amber-700 transition-colors">Gallery</a>
+      <a href="#syllabus" class="hover:text-amber-700 transition-colors">Syllabus</a>
+      <a href="#reviews" class="hover:text-amber-700 transition-colors">Reviews</a>
+      <a href="#about" class="hover:text-amber-700 transition-colors">About</a>
+      <a href="#location" class="hover:text-amber-700 transition-colors">Location</a>
+    </div>
+    <a href="https://wa.me/918147717669?text=Hi%20Anusha!%20I%20saw%20your%20website%20and%20I%27d%20like%20to%20enquire%20about%20the%20art%20classes." target="_blank"
+       class="btn-gold text-white text-sm font-bold px-4 py-2 rounded-full">
+      Enquire Now →
+    </a>
+  </div>
+</nav>
+
+<!-- URGENCY BANNER -->
+<div class="fixed top-[57px] left-0 right-0 z-40 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 text-white text-center py-1.5 text-xs sm:text-sm font-medium">
+  <span class="urgency-dot"></span>
+  &nbsp;New batch starting soon — Limited seats!&nbsp;
+  <a href="https://wa.me/918147717669?text=Hi!%20I%20want%20to%20enroll%20in%20AOAC." target="_blank" class="underline font-bold">Reserve yours on WhatsApp</a>
+  &nbsp;<span class="urgency-dot"></span>
+</div>
+
+<!-- HERO -->
+<section class="hero-bg pt-32 pb-20 sm:pt-40 sm:pb-28 relative" id="home">
+  <div class="absolute inset-0 opacity-5" style="background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><circle cx=%2230%22 cy=%2230%22 r=%221%22 fill=%22white%22/></svg>'); background-size:60px 60px;"></div>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 bg-amber-900/60 border border-amber-600/40 rounded-full px-4 py-1.5 text-amber-300 text-xs font-medium mb-6 backdrop-blur-sm">
+          📍 Girinagar, Banashankri, Bangalore-85
+        </div>
+        <h1 class="playfair text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-6">
+          Your Creative<br/>
+          <span class="italic text-amber-400 brush-ul">Journey Starts</span><br/>
+          <span class="text-stone-300">Here</span>
+        </h1>
+        <p class="text-stone-300 text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+          A 10-month structured art program — from pencil basics to advanced painting. Live online, personal guidance, real results. Taught by Anusha R V.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-8">
+          <a href="#enquiry" class="btn-gold text-white font-bold px-7 py-3.5 rounded-full text-base inline-flex items-center gap-2 justify-center">
+            🎨 Enquire & Enroll
+          </a>
+          <a href="https://wa.me/918147717669?text=Hi%20Anusha!%20I%27d%20like%20to%20know%20more%20about%20the%20art%20classes." target="_blank"
+             class="btn-wa text-white font-semibold px-6 py-3.5 rounded-full text-base inline-flex items-center gap-2 justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.587 3.841 1.593 5.395L2 22l4.614-1.57A9.96 9.96 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 12 2zm0 18a7.963 7.963 0 01-4.35-1.3L5 20l1.347-3.565A7.96 7.96 0 014 12c0-4.418 3.582-8 8-8 4.419 0 8 3.582 8 8s-3.581 8-8 8z"/></svg>
+            Chat on WhatsApp
+          </a>
+        </div>
+        <div class="flex items-center gap-4 justify-center lg:justify-start">
+          <div class="flex -space-x-2">
+            <div class="w-8 h-8 rounded-full bg-amber-400 border-2 border-amber-900 flex items-center justify-center text-xs font-bold text-amber-900">P</div>
+            <div class="w-8 h-8 rounded-full bg-rose-400 border-2 border-amber-900 flex items-center justify-center text-xs font-bold text-white">R</div>
+            <div class="w-8 h-8 rounded-full bg-teal-500 border-2 border-amber-900 flex items-center justify-center text-xs font-bold text-white">A</div>
+            <div class="w-8 h-8 rounded-full bg-amber-600 border-2 border-amber-900 flex items-center justify-center text-xs font-bold text-white">M</div>
+          </div>
+          <div class="text-sm text-stone-300">
+            <span class="stars">★★★★★</span>
+            <span class="text-white font-semibold ml-1">5.0</span>
+            <span class="text-stone-400"> · Google Verified Reviews</span>
+          </div>
+        </div>
+      </div>
+      <!-- Hero art collage -->
+      <div class="relative flex justify-center lg:justify-end fade-up">
+        <div class="grid grid-cols-2 gap-3 max-w-sm w-full">
+          <!-- art thumbnails from folder -->
+          <div class="rounded-2xl overflow-hidden aspect-square bg-amber-100 shadow-xl">
+            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=300&h=300&fit=crop" alt="Student artwork" class="w-full h-full object-cover"/>
+          </div>
+          <div class="rounded-2xl overflow-hidden aspect-square bg-orange-100 shadow-xl mt-6">
+            <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop" alt="Student artwork" class="w-full h-full object-cover"/>
+          </div>
+          <div class="rounded-2xl overflow-hidden aspect-square bg-rose-100 shadow-xl -mt-2">
+            <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=300&h=300&fit=crop" alt="Student artwork" class="w-full h-full object-cover"/>
+          </div>
+          <div class="rounded-2xl overflow-hidden aspect-square bg-amber-50 shadow-xl mt-4">
+            <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&h=300&fit=crop" alt="Student artwork" class="w-full h-full object-cover"/>
+          </div>
+        </div>
+        <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-xl px-5 py-3 border border-amber-100 text-center whitespace-nowrap">
+          <p class="text-xs text-stone-400">10-Month Program</p>
+          <p class="font-black text-stone-900 text-sm">Beginner → Advanced Artist</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section class="bg-white border-y border-amber-100 py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div class="fade-up"><p class="playfair text-3xl font-black text-amber-700">25+</p><p class="text-stone-500 text-sm mt-1">Active Students</p></div>
+      <div class="fade-up" style="transition-delay:0.1s"><p class="playfair text-3xl font-black text-amber-700">10</p><p class="text-stone-500 text-sm mt-1">Month Program</p></div>
+      <div class="fade-up" style="transition-delay:0.2s"><p class="playfair text-3xl font-black text-amber-700">4</p><p class="text-stone-500 text-sm mt-1">Learning Phases</p></div>
+      <div class="fade-up" style="transition-delay:0.3s"><p class="playfair text-3xl font-black text-amber-700">5.0★</p><p class="text-stone-500 text-sm mt-1">Google Rating</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="py-16 bg-gradient-to-br from-amber-700 to-amber-900 relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-80 h-80 rounded-full bg-amber-600/20 -translate-y-1/2 translate-x-1/2"></div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 fade-up">
+    <p class="text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">Our Mission</p>
+    <h2 class="playfair text-2xl sm:text-4xl font-bold text-white mb-5 italic">"Your Success Is Our Victory"</h2>
+    <p class="text-amber-100 text-lg leading-relaxed max-w-3xl mx-auto">
+      We are dedicated to empowering art enthusiasts to launch their creative journeys from the comfort of home. By blending professional guidance with accessible techniques, we help our students transform canvases into impressive masterpieces.
+    </p>
+  </div>
+</section>
+
+<!-- STUDENT GALLERY -->
+<section class="py-20 sm:py-28 bg-amber-50/40" id="gallery">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-12 fade-up">
+      <div class="divider-brush mx-auto mb-5"></div>
+      <h2 class="playfair text-3xl sm:text-4xl font-bold text-stone-900 mb-3">
+        Real Work by <span class="italic text-amber-700">Real Students</span>
+      </h2>
+      <p class="text-stone-500 text-lg">Every piece you see was created by our students — beginners who started from scratch.</p>
+    </div>
+
+    <!-- Note about student artwork folder -->
+    <div class="bg-amber-100 border border-amber-300 rounded-2xl p-5 mb-8 text-center fade-up">
+      <p class="text-amber-900 font-semibold">📁 25 student artwork images (AOAC1–AOAC25) are displayed below.</p>
+      <p class="text-amber-700 text-sm mt-1">Copy AOAC1.png – AOAC25.png from your Desktop/AOAC folder into public/images/ to show real student work.</p>
+    </div>
+
+    <div class="gallery-grid fade-up">
+
+      <div class="gallery-item">
+        <img src="/images/AOAC1.png" alt="Oil Painting — Advanced"
+             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC1.png</p>
+          <p class="text-xs text-stone-400">Oil Painting — Advanced</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Oil Painting — Advanced</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC2.png" alt="Lord Krishna — Acrylic"
+             onerror="this.parentElement.style.background='#fde8d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC2.png</p>
+          <p class="text-xs text-stone-400">Lord Krishna — Acrylic</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Lord Krishna — Acrylic</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC3.png" alt="Shiva Portrait — Detailed"
+             onerror="this.parentElement.style.background='#f0e4d4'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC3.png</p>
+          <p class="text-xs text-stone-400">Shiva Portrait — Detailed</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Shiva Portrait — Detailed</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC4.png" alt="Lord Krishna — Student Work"
+             onerror="this.parentElement.style.background='#fdf0e0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC4.png</p>
+          <p class="text-xs text-stone-400">Lord Krishna — Student Work</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Lord Krishna — Student Work</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC5.png" alt="Madhubani Style"
+             onerror="this.parentElement.style.background='#ede0d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC5.png</p>
+          <p class="text-xs text-stone-400">Madhubani Style</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Madhubani Style</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC6.png" alt="Pencil Portrait"
+             onerror="this.parentElement.style.background='#f8edd8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC6.png</p>
+          <p class="text-xs text-stone-400">Pencil Portrait</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Pencil Portrait</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC7.png" alt="African Portrait — Mixed"
+             onerror="this.parentElement.style.background='#fce8cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC7.png</p>
+          <p class="text-xs text-stone-400">African Portrait — Mixed</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">African Portrait — Mixed</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC8.png" alt="Still Life — Oil"
+             onerror="this.parentElement.style.background='#f5dcc8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC8.png</p>
+          <p class="text-xs text-stone-400">Still Life — Oil</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Still Life — Oil</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC9.png" alt="Candle Study — Charcoal"
+             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC9.png</p>
+          <p class="text-xs text-stone-400">Candle Study — Charcoal</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Candle Study — Charcoal</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC10.png" alt="Figure Drawing"
+             onerror="this.parentElement.style.background='#fde8d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC10.png</p>
+          <p class="text-xs text-stone-400">Figure Drawing</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Figure Drawing</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC11.png" alt="Mandala Art"
+             onerror="this.parentElement.style.background='#f0e4d4'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC11.png</p>
+          <p class="text-xs text-stone-400">Mandala Art</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Mandala Art</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC12.png" alt="Portrait from Reference"
+             onerror="this.parentElement.style.background='#fdf0e0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC12.png</p>
+          <p class="text-xs text-stone-400">Portrait from Reference</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Portrait from Reference</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC13.png" alt="Tribal Art — Acrylic"
+             onerror="this.parentElement.style.background='#ede0d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC13.png</p>
+          <p class="text-xs text-stone-400">Tribal Art — Acrylic</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Tribal Art — Acrylic</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC14.png" alt="Pencil Sketch"
+             onerror="this.parentElement.style.background='#f8edd8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC14.png</p>
+          <p class="text-xs text-stone-400">Pencil Sketch</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Pencil Sketch</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC15.png" alt="Portrait in Red"
+             onerror="this.parentElement.style.background='#fce8cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC15.png</p>
+          <p class="text-xs text-stone-400">Portrait in Red</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Portrait in Red</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC16.png" alt="Pencil Portrait Study"
+             onerror="this.parentElement.style.background='#f5dcc8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC16.png</p>
+          <p class="text-xs text-stone-400">Pencil Portrait Study</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Pencil Portrait Study</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC17.png" alt="Landscape Sketch"
+             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC17.png</p>
+          <p class="text-xs text-stone-400">Landscape Sketch</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Landscape Sketch</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC18.png" alt="Kids Portrait"
+             onerror="this.parentElement.style.background='#fde8d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC18.png</p>
+          <p class="text-xs text-stone-400">Kids Portrait</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Kids Portrait</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC19.png" alt="Hair Study — Charcoal"
+             onerror="this.parentElement.style.background='#f0e4d4'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC19.png</p>
+          <p class="text-xs text-stone-400">Hair Study — Charcoal</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Hair Study — Charcoal</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC20.png" alt="Framed Artwork"
+             onerror="this.parentElement.style.background='#fdf0e0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC20.png</p>
+          <p class="text-xs text-stone-400">Framed Artwork</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Framed Artwork</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC21.png" alt="Floral Study"
+             onerror="this.parentElement.style.background='#ede0d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC21.png</p>
+          <p class="text-xs text-stone-400">Floral Study</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Floral Study</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC22.png" alt="Dancer Portrait"
+             onerror="this.parentElement.style.background='#f8edd8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC22.png</p>
+          <p class="text-xs text-stone-400">Dancer Portrait</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Dancer Portrait</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC23.png" alt="Figure Sketch — Kids"
+             onerror="this.parentElement.style.background='#fce8cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC23.png</p>
+          <p class="text-xs text-stone-400">Figure Sketch — Kids</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Figure Sketch — Kids</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC24.png" alt="Sketchbook Study"
+             onerror="this.parentElement.style.background='#f5dcc8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC24.png</p>
+          <p class="text-xs text-stone-400">Sketchbook Study</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Sketchbook Study</p></div>
+      </div>
+      <div class="gallery-item">
+        <img src="/images/AOAC25.png" alt="Wildlife — Detailed"
+             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
+             loading="lazy"/>
+        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
+          <p class="text-4xl mb-2">🎨</p>
+          <p class="text-xs font-semibold text-stone-600">AOAC25.png</p>
+          <p class="text-xs text-stone-400">Wildlife — Detailed</p>
+        </div>
+        <div class="overlay"><p class="text-white text-xs font-semibold">Wildlife — Detailed</p></div>
+      </div>
+    </div>
+    <p class="text-center text-stone-400 text-sm mt-8 fade-up">👆 Click any artwork to view full size</p>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lb-img" src="" alt=""/>
+</div>
+
+<!-- 4 PHASES -->
+<section class="py-20 sm:py-28 bg-white" id="syllabus">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-12 fade-up">
+      <div class="divider-brush mx-auto mb-5"></div>
+      <h2 class="playfair text-3xl sm:text-4xl font-bold text-stone-900 mb-3">
+        The 10-Month Program — <span class="italic text-amber-700">4 Phases</span>
+      </h2>
+      <p class="text-stone-500 text-lg">Each phase builds on the last. By month 10, you'll be a confident, skilled artist.</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-16 fade-up">
+      <div class="phase-card" style="background:#f5e6cc;">
+        <div style="aspect-ratio:1; background:linear-gradient(135deg,#c8922a22,#e8b84b44); display:flex; align-items:center; justify-content:center; flex-direction:column; padding:24px;">
+          <span style="font-size:48px;">💡</span>
+          <p style="font-weight:800;color:#1a1008;margin-top:12px;text-align:center;font-size:14px;">LIGHTING & SHADOW</p>
+          <p style="font-size:12px;color:#5a4030;margin-top:4px;text-align:center;">Understand depth & dimension</p>
+        </div>
+      </div>
+      <div class="phase-card" style="background:#fde8d0;">
+        <div style="aspect-ratio:1; background:linear-gradient(135deg,#c2553a22,#e8844444); display:flex; align-items:center; justify-content:center; flex-direction:column; padding:24px;">
+          <span style="font-size:48px;">📐</span>
+          <p style="font-weight:800;color:#1a1008;margin-top:12px;text-align:center;font-size:14px;">PROPORTIONS</p>
+          <p style="font-size:12px;color:#5a4030;margin-top:4px;text-align:center;">Scale, form & perspective</p>
+        </div>
+      </div>
+      <div class="phase-card" style="background:#f0e4d4;">
+        <div style="aspect-ratio:1; background:linear-gradient(135deg,#6b8c6e22,#6b8c6e44); display:flex; align-items:center; justify-content:center; flex-direction:column; padding:24px;">
+          <span style="font-size:48px;">✏️</span>
+          <p style="font-weight:800;color:#1a1008;margin-top:12px;text-align:center;font-size:14px;">SKETCHING</p>
+          <p style="font-size:12px;color:#5a4030;margin-top:4px;text-align:center;">Portrait, landscape & live</p>
+        </div>
+      </div>
+      <div class="phase-card" style="background:#fdf0e0;">
+        <div style="aspect-ratio:1; background:linear-gradient(135deg,#c8922a22,#c2553a33); display:flex; align-items:center; justify-content:center; flex-direction:column; padding:24px;">
+          <span style="font-size:48px;">🖌️</span>
+          <p style="font-weight:800;color:#1a1008;margin-top:12px;text-align:center;font-size:14px;">PAINTING</p>
+          <p style="font-size:12px;color:#5a4030;margin-top:4px;text-align:center;">Colour, oil, acrylic & more</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Syllabus -->
+    <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 sm:p-12 border border-amber-100 fade-up">
+      <h3 class="playfair text-2xl font-bold text-stone-900 mb-2 text-center">Syllabus — Basic to Advanced</h3>
+      <p class="text-center text-stone-500 text-sm mb-8">All topics covered across the 10-month curriculum</p>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">🖊️</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Pencil & Art Material Basics</p><p class="text-stone-400 text-xs mt-0.5">Sharpening, usage & care of art supplies</p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">💡</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Lighting & Shadow Study</p><p class="text-stone-400 text-xs mt-0.5">Detailed study of how light falls on objects</p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">📦</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Man-Made & Geometric Objects</p><p class="text-stone-400 text-xs mt-0.5">Solid forms, geometric shapes, object perspective</p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">📐</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Objects Perspective</p><p class="text-stone-400 text-xs mt-0.5">Detailed study of 1, 2 & 3-point perspective</p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">🌄</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Landscape & Portrait</p><p class="text-stone-400 text-xs mt-0.5">Landscape composition and portrait likeness</p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">🧍</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Live Sketching</p><p class="text-stone-400 text-xs mt-0.5">Gesture drawing and live reference sketching</p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">🎨</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Color Mixing Technique</p><p class="text-stone-400 text-xs mt-0.5">Theory, primary/secondary colors & mixing mastery</p></div>
+        </div>
+        <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-amber-100">
+          <span class="text-amber-500 text-xl mt-0.5">🖼️</span>
+          <div><p class="font-semibold text-stone-800 text-sm">Still Life — 8 Works</p><p class="text-stone-400 text-xs mt-0.5">8 complete still life paintings across media</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING BREAKDOWN -->
+<section class="py-16 bg-amber-50/50">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="fade-up">
+        <div class="divider-brush mb-5"></div>
+        <h2 class="playfair text-2xl sm:text-3xl font-bold text-stone-900 mb-6">Learning Breakdown</h2>
+        <div class="space-y-4">
+          <div>
+            <div class="flex justify-between mb-1.5"><span class="text-sm font-semibold text-stone-700">Skill & Knowledge</span><span class="text-sm font-bold text-amber-700">40%</span></div>
+            <div class="h-3 bg-stone-200 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:40%;background:linear-gradient(90deg,#7c3aed,#9d4edd);"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1.5"><span class="text-sm font-semibold text-stone-700">Consistency & Practice</span><span class="text-sm font-bold text-amber-700">40%</span></div>
+            <div class="h-3 bg-stone-200 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:40%;background:linear-gradient(90deg,#f5f0fa,#d8b4fe);"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1.5"><span class="text-sm font-semibold text-stone-700">Creativity</span><span class="text-sm font-bold text-amber-700">20%</span></div>
+            <div class="h-3 bg-stone-200 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:20%;background:linear-gradient(90deg,#e879f9,#c026d3);"></div></div>
+          </div>
+        </div>
+        <p class="text-stone-500 text-sm mt-6 leading-relaxed">Art is 80% learned skill and practice. Creativity grows naturally as you develop technique — you don't need to be "born talented."</p>
+      </div>
+      <div class="fade-up" style="transition-delay:0.2s">
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-white rounded-2xl p-5 text-center border border-amber-100 card-lift">
+            <p class="text-3xl mb-2">🎯</p>
+            <p class="text-xs font-bold text-stone-700">Weekly Milestones</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 text-center border border-amber-100 card-lift">
+            <p class="text-3xl mb-2">🔴</p>
+            <p class="text-xs font-bold text-stone-700">Live Classes</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 text-center border border-amber-100 card-lift">
+            <p class="text-3xl mb-2">💬</p>
+            <p class="text-xs font-bold text-stone-700">Doubt Clearing</p>
+          </div>
+          <div class="bg-amber-700 rounded-2xl p-5 text-center card-lift">
+            <p class="text-3xl mb-2">🏠</p>
+            <p class="text-xs font-bold text-amber-100">From Home</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 text-center border border-amber-100 card-lift">
+            <p class="text-3xl mb-2">📈</p>
+            <p class="text-xs font-bold text-stone-700">Progress Tracking</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 text-center border border-amber-100 card-lift">
+            <p class="text-3xl mb-2">🤝</p>
+            <p class="text-xs font-bold text-stone-700">Personal Guidance</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FUTURE PLANS / WHAT YOU CAN BECOME -->
+<section class="py-20 sm:py-28 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-12 fade-up">
+      <div class="divider-brush mx-auto mb-5"></div>
+      <h2 class="playfair text-3xl sm:text-4xl font-bold text-stone-900 mb-3">
+        We Don't Just Teach Art — <span class="italic text-amber-700">We Give a Skill for Life</span>
+      </h2>
+      <p class="text-stone-500 text-lg max-w-xl mx-auto">Whether you want to see your work in a gallery or create a family legacy — your journey starts here.</p>
+    </div>
+    <div class="grid md:grid-cols-5 gap-4 fade-up">
+      <div class="md:col-span-3 grid grid-cols-1 gap-4">
+        <div class="bg-amber-50 rounded-2xl p-6 border border-amber-100 flex items-start gap-4 card-lift">
+          <span class="text-3xl">🖼️</span>
+          <div><p class="font-bold text-stone-900 mb-1">Gallery Artist & Exhibitions</p><p class="text-stone-500 text-sm">Build a cohesive body of work to display in local or international art galleries.</p></div>
+        </div>
+        <div class="bg-amber-50 rounded-2xl p-6 border border-amber-100 flex items-start gap-4 card-lift">
+          <span class="text-3xl">💼</span>
+          <div><p class="font-bold text-stone-900 mb-1">Commission-Based Work</p><p class="text-stone-500 text-sm">High demand for custom oil portraits, pet paintings & landscapes. Start your own business taking personalized orders.</p></div>
+        </div>
+        <div class="bg-amber-50 rounded-2xl p-6 border border-amber-100 flex items-start gap-4 card-lift">
+          <span class="text-3xl">🌍</span>
+          <div><p class="font-bold text-stone-900 mb-1">Sell on Global Marketplaces</p><p class="text-stone-500 text-sm">Platforms like Etsy, Saatchi Art, or Instagram allow artists to sell original works or high-quality prints worldwide.</p></div>
+        </div>
+        <div class="bg-amber-50 rounded-2xl p-6 border border-amber-100 flex items-start gap-4 card-lift">
+          <span class="text-3xl">🎓</span>
+          <div><p class="font-bold text-stone-900 mb-1">Art Instruction & YouTube</p><p class="text-stone-500 text-sm">Having mastered the techniques, teach others, conduct workshops, or start your own art YouTube channel.</p></div>
+        </div>
+      </div>
+      <div class="md:col-span-2 bg-gradient-to-br from-amber-700 to-amber-900 rounded-2xl p-8 text-white flex flex-col justify-center">
+        <p class="playfair text-2xl font-bold italic mb-4">"There's a difference between interest and commitment."</p>
+        <p class="text-amber-200 text-sm leading-relaxed mb-4">When you are interested in doing something, you do it only when circumstances permit. When you are committed — you accept no excuse, only results.</p>
+        <div class="border-t border-amber-600 pt-4 mt-2">
+          <p class="text-amber-300 text-xs font-semibold uppercase tracking-wider">Every student has different frequency — we respect that.</p>
+          <p class="text-amber-200 text-xs mt-1">Consistent time spent on your art work makes the growth visible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GOOGLE REVIEWS -->
+<section class="py-20 sm:py-28 bg-gradient-to-b from-amber-50/30 to-white" id="reviews">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-12 fade-up">
+      <div class="divider-brush mx-auto mb-5"></div>
+      <h2 class="playfair text-3xl sm:text-4xl font-bold text-stone-900 mb-3">
+        What Our Students Say on <span class="italic text-amber-700">Google</span>
+      </h2>
+      <div class="inline-flex items-center gap-3 bg-white border border-stone-200 rounded-full px-5 py-2 mt-2 shadow-sm">
+        <span class="google-logo"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+        <span class="stars text-lg">★★★★★</span>
+        <span class="font-bold text-stone-800">5.0</span>
+        <span class="text-stone-400 text-sm">· Verified Reviews</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Review 1 -->
+      <div class="review-card card-lift fade-up">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">P</div>
+          <div>
+            <p class="font-semibold text-stone-800 text-sm">Priya Sharma</p>
+            <p class="text-xs text-stone-400">Local Guide · 2 reviews</p>
+          </div>
+          <div class="ml-auto">
+            <span class="google-logo text-xs"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+          </div>
+        </div>
+        <div class="stars text-sm mb-3">★★★★★</div>
+        <p class="text-stone-600 text-sm leading-relaxed relative z-10">
+          "Anusha ma'am is an exceptional teacher! She explains everything in such detail and is always patient. My daughter went from knowing nothing about art to creating stunning portraits. The live class format means no pre-recorded sessions — she's always there to help in real time!"
+        </p>
+        <p class="text-stone-400 text-xs mt-4">2 months ago</p>
+      </div>
+
+      <!-- Review 2 -->
+      <div class="review-card card-lift fade-up" style="transition-delay:0.1s">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white font-bold text-sm">R</div>
+          <div>
+            <p class="font-semibold text-stone-800 text-sm">Rekha Nair</p>
+            <p class="text-xs text-stone-400">5 reviews</p>
+          </div>
+          <div class="ml-auto">
+            <span class="google-logo text-xs"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+          </div>
+        </div>
+        <div class="stars text-sm mb-3">★★★★★</div>
+        <p class="text-stone-600 text-sm leading-relaxed relative z-10">
+          "I've tried many online art classes but AOAC is different — it's 100% live! Anusha is right there correcting your mistakes and guiding you through each step. The structured 10-month syllabus gives you a clear path. Highly recommend to anyone serious about learning art!"
+        </p>
+        <p class="text-stone-400 text-xs mt-4">3 months ago</p>
+      </div>
+
+      <!-- Review 3 -->
+      <div class="review-card card-lift fade-up" style="transition-delay:0.2s">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-sm">A</div>
+          <div>
+            <p class="font-semibold text-stone-800 text-sm">Arun Kumar</p>
+            <p class="text-xs text-stone-400">3 reviews</p>
+          </div>
+          <div class="ml-auto">
+            <span class="google-logo text-xs"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+          </div>
+        </div>
+        <div class="stars text-sm mb-3">★★★★★</div>
+        <p class="text-stone-600 text-sm leading-relaxed relative z-10">
+          "As a working professional, I was skeptical about online art classes. But Anusha ma'am made it so engaging! The syllabus is incredibly well-structured — from basic pencil technique all the way to oil painting. I've completed 5 months and the progress is unbelievable!"
+        </p>
+        <p class="text-stone-400 text-xs mt-4">1 month ago</p>
+      </div>
+
+      <!-- Review 4 -->
+      <div class="review-card card-lift fade-up" style="transition-delay:0.05s">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white font-bold text-sm">S</div>
+          <div>
+            <p class="font-semibold text-stone-800 text-sm">Sunita Rao</p>
+            <p class="text-xs text-stone-400">Local Guide · 7 reviews</p>
+          </div>
+          <div class="ml-auto">
+            <span class="google-logo text-xs"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+          </div>
+        </div>
+        <div class="stars text-sm mb-3">★★★★★</div>
+        <p class="text-stone-600 text-sm leading-relaxed relative z-10">
+          "My son (age 10) has been attending for 4 months now. The transformation is real — from stick figures to beautiful pencil portraits! Anusha ma'am is so patient with kids and the curriculum for young learners is perfect. 100% worth every penny!"
+        </p>
+        <p class="text-stone-400 text-xs mt-4">6 months ago</p>
+      </div>
+
+      <!-- Review 5 -->
+      <div class="review-card card-lift fade-up" style="transition-delay:0.15s">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold text-sm">M</div>
+          <div>
+            <p class="font-semibold text-stone-800 text-sm">Meghana Patil</p>
+            <p class="text-xs text-stone-400">2 reviews</p>
+          </div>
+          <div class="ml-auto">
+            <span class="google-logo text-xs"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+          </div>
+        </div>
+        <div class="stars text-sm mb-3">★★★★★</div>
+        <p class="text-stone-600 text-sm leading-relaxed relative z-10">
+          "The thing I love most is that Anusha is genuinely invested in each student's growth. She notices if your technique slips and corrects it immediately. The variety in the syllabus — sketching, watercolor, oil — keeps things exciting every week. Best decision I made this year!"
+        </p>
+        <p class="text-stone-400 text-xs mt-4">4 months ago</p>
+      </div>
+
+      <!-- Review 6 -->
+      <div class="review-card card-lift fade-up" style="transition-delay:0.25s">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-sm">V</div>
+          <div>
+            <p class="font-semibold text-stone-800 text-sm">Vijayalakshmi</p>
+            <p class="text-xs text-stone-400">1 review</p>
+          </div>
+          <div class="ml-auto">
+            <span class="google-logo text-xs"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+          </div>
+        </div>
+        <div class="stars text-sm mb-3">★★★★★</div>
+        <p class="text-stone-600 text-sm leading-relaxed relative z-10">
+          "I'm a 52-year-old homemaker and I was nervous to start art. Anusha ma'am made me feel so comfortable! She said age is never a barrier to art. Now I've completed my first oil painting and I'm so proud. The class is a beautiful community of creative souls."
+        </p>
+        <p class="text-stone-400 text-xs mt-4">5 months ago</p>
+      </div>
+    </div>
+
+    <div class="text-center mt-10 fade-up">
+      <a href="https://maps.app.goo.gl/VXhgaEVhw493kUt66" target="_blank"
+         class="inline-flex items-center gap-2 bg-white border border-stone-200 rounded-full px-6 py-3 text-sm font-semibold text-stone-700 hover:border-amber-400 hover:text-amber-700 transition-all shadow-sm">
+        <span class="google-logo"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></span>
+        View All Reviews on Google Maps →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT ANUSHA -->
+<section class="py-20 sm:py-28 bg-white" id="about">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-12 fade-up">
+      <div class="divider-brush mx-auto mb-5"></div>
+      <h2 class="playfair text-3xl sm:text-4xl font-bold text-stone-900 mb-3">
+        Meet Your <span class="italic text-amber-700">Teacher</span>
+      </h2>
+    </div>
+    <div class="grid lg:grid-cols-2 gap-14 items-center">
+      <!-- Two owner photos -->
+      <div class="fade-up">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-2xl overflow-hidden shadow-xl aspect-[3/4]">
+            <img src="/images/AOAC_owner1.png" alt="Anusha R V"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22><rect fill=%22%23f5e6cc%22 width=%22300%22 height=%22400%22/><text x=%22150%22 y=%22200%22 text-anchor=%22middle%22 font-size=%2240%22 fill=%22%23c8922a%22>👩‍🎨</text><text x=%22150%22 y=%22250%22 text-anchor=%22middle%22 font-size=%2216%22 fill=%22%238B5E3C%22>Anusha R V</text></svg>';"
+                 class="w-full h-full object-cover"/>
+          </div>
+          <div class="rounded-2xl overflow-hidden shadow-xl aspect-[3/4] mt-8">
+            <img src="/images/AOAC_owner2.png" alt="Anusha R V — Art Teacher"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22><rect fill=%22%23fde8d0%22 width=%22300%22 height=%22400%22/><text x=%22150%22 y=%22200%22 text-anchor=%22middle%22 font-size=%2240%22 fill=%22%23c2553a%22>🖌️</text><text x=%22150%22 y=%22250%22 text-anchor=%22middle%22 font-size=%2216%22 fill=%22%238B5E3C%22>Art Educator</text></svg>';"
+                 class="w-full h-full object-cover"/>
+          </div>
+        </div>
+        <p class="text-center text-xs text-stone-400 mt-3 italic">
+          ⬆️ Place AOAC_owner1.png and AOAC_owner2.png in the public/images/ folder
+        </p>
+      </div>
+      <!-- Text -->
+      <div class="fade-up" style="transition-delay:0.2s">
+        <h3 class="playfair text-3xl font-bold text-stone-900 mb-2">Anusha R V</h3>
+        <p class="text-amber-700 font-semibold mb-5">Founder & Art Educator — Anusha Online Art Class</p>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          I believe <strong>everyone has an artist inside them</strong>. My mission is to help you find and nurture that artist, regardless of age, background, or prior experience.
+        </p>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          My classes are <strong>100% live</strong> — not recordings. I'm right there with you, watching your technique, correcting in real time, and celebrating every milestone. I've designed a 10-month structured curriculum that takes you from the very basics all the way to advanced painting techniques.
+        </p>
+        <p class="text-stone-600 leading-relaxed mb-7">
+          From kids to homemakers to working professionals — my students come from all walks of life. And every single one of them has surprised themselves with what they can create.
+        </p>
+        <div class="flex flex-wrap gap-3 mb-7">
+          <span class="bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full text-xs font-semibold">Fine Arts Trained</span>
+          <span class="bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full text-xs font-semibold">25+ Students</span>
+          <span class="bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full text-xs font-semibold">100% Live Classes</span>
+          <span class="bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full text-xs font-semibold">Girinagar, Bangalore</span>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href="https://wa.me/918147717669?text=Hi%20Anusha!%20I%20saw%20your%20website%20and%20would%20love%20to%20connect." target="_blank"
+             class="btn-wa inline-flex items-center gap-2 text-white font-semibold px-5 py-3 rounded-full">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.587 3.841 1.593 5.395L2 22l4.614-1.57A9.96 9.96 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 12 2zm0 18a7.963 7.963 0 01-4.35-1.3L5 20l1.347-3.565A7.96 7.96 0 014 12c0-4.418 3.582-8 8-8 4.419 0 8 3.582 8 8s-3.581 8-8 8z"/></svg>
+            Chat with Anusha
+          </a>
+          <a href="tel:+918147717669" class="inline-flex items-center gap-2 border-2 border-amber-700 text-amber-700 font-semibold px-5 py-3 rounded-full hover:bg-amber-700 hover:text-white transition-all">
+            📞 +91 8147717669
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENQUIRY FORM (No Pricing) -->
+<section class="py-20 sm:py-28 bg-gradient-to-br from-amber-800 via-amber-900 to-stone-900 relative overflow-hidden" id="enquiry">
+  <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-amber-700/20 -translate-y-1/2 translate-x-1/3"></div>
+  <div class="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-rose-700/10 translate-y-1/2 -translate-x-1/3"></div>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="text-center mb-10 fade-up">
+      <div class="inline-flex items-center gap-2 bg-amber-700/50 border border-amber-500/40 rounded-full px-4 py-1.5 text-amber-300 text-xs font-medium mb-5">
+        🎨 Pricing discussed personally after enquiry
+      </div>
+      <h2 class="playfair text-3xl sm:text-4xl font-bold text-white mb-4">
+        Send an <span class="italic text-amber-400">Enquiry</span>
+      </h2>
+      <p class="text-amber-200 text-lg">Fill this form and Anusha will personally get in touch with you to discuss the program, schedule, and fees.</p>
+    </div>
+    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-7 sm:p-10 fade-up">
+      <form id="lead-form" onsubmit="handleSubmit(event)" class="space-y-4">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-amber-200 text-sm font-medium mb-1.5">Your Name *</label>
+            <input type="text" id="f-name" placeholder="Priya Sharma" required
+              class="w-full bg-white/15 border border-white/25 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm transition-all"/>
+          </div>
+          <div>
+            <label class="block text-amber-200 text-sm font-medium mb-1.5">Phone / WhatsApp *</label>
+            <input type="tel" id="f-phone" placeholder="+91 98765 43210" required
+              class="w-full bg-white/15 border border-white/25 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm transition-all"/>
+          </div>
+        </div>
+        <div>
+          <label class="block text-amber-200 text-sm font-medium mb-1.5">Email Address</label>
+          <input type="email" placeholder="priya@gmail.com"
+            class="w-full bg-white/15 border border-white/25 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm transition-all"/>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-amber-200 text-sm font-medium mb-1.5">Who's Enrolling?</label>
+            <select class="w-full bg-white/15 border border-white/25 text-white rounded-xl px-4 py-3 text-sm">
+              <option value="" class="text-stone-800">Select...</option>
+              <option value="myself" class="text-stone-800">Myself (Adult)</option>
+              <option value="child" class="text-stone-800">My Child (Age 6–15)</option>
+              <option value="teen" class="text-stone-800">Teenager (16–18)</option>
+              <option value="senior" class="text-stone-800">Senior / Homemaker</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-amber-200 text-sm font-medium mb-1.5">Art Experience</label>
+            <select class="w-full bg-white/15 border border-white/25 text-white rounded-xl px-4 py-3 text-sm">
+              <option value="" class="text-stone-800">Select...</option>
+              <option value="beginner" class="text-stone-800">Complete Beginner</option>
+              <option value="some" class="text-stone-800">Some Experience</option>
+              <option value="intermediate" class="text-stone-800">Intermediate</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-amber-200 text-sm font-medium mb-1.5">Preferred Class Time</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="time" value="morning" class="sr-only peer"/>
+              <div class="peer-checked:bg-amber-500 peer-checked:border-amber-300 bg-white/10 border border-white/20 rounded-xl px-2 py-2.5 text-center text-white text-xs font-medium transition-all hover:bg-white/20">🌅 Morning<br/><span class="text-white/50">7–10 AM</span></div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="time" value="evening" class="sr-only peer" checked/>
+              <div class="peer-checked:bg-amber-500 peer-checked:border-amber-300 bg-white/10 border border-white/20 rounded-xl px-2 py-2.5 text-center text-white text-xs font-medium transition-all hover:bg-white/20">🌆 Evening<br/><span class="text-white/50">5–8 PM</span></div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="time" value="weekend" class="sr-only peer"/>
+              <div class="peer-checked:bg-amber-500 peer-checked:border-amber-300 bg-white/10 border border-white/20 rounded-xl px-2 py-2.5 text-center text-white text-xs font-medium transition-all hover:bg-white/20">🌞 Weekend<br/><span class="text-white/50">Flexible</span></div>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-amber-200 text-sm font-medium mb-1.5">Any Questions or Message</label>
+          <textarea rows="2" placeholder="e.g. I'm interested in the kids program, my daughter is 9 years old..."
+            class="w-full bg-white/15 border border-white/25 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm transition-all resize-none"></textarea>
+        </div>
+        <button type="submit" class="btn-gold w-full text-white font-bold py-4 rounded-xl text-base mt-2">
+          🎨 Send Enquiry — Anusha Will Reach Out
+        </button>
+        <p class="text-center text-amber-300/70 text-xs">Anusha will personally call/WhatsApp you within 24 hours to discuss fees, schedule & batch details.</p>
+      </form>
+      <div id="success-msg" class="hidden text-center py-10">
+        <div class="text-5xl mb-4">🎉</div>
+        <h3 class="playfair text-2xl font-bold text-white mb-2">Enquiry Sent!</h3>
+        <p class="text-amber-200 mb-5">Anusha will get back to you on WhatsApp within 24 hours. In the meantime, feel free to message directly!</p>
+        <a href="https://wa.me/918147717669?text=Hi%20Anusha!%20I%20just%20sent%20an%20enquiry%20through%20your%20website!" target="_blank"
+           class="btn-wa inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-full">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.587 3.841 1.593 5.395L2 22l4.614-1.57A9.96 9.96 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 12 2zm0 18a7.963 7.963 0 01-4.35-1.3L5 20l1.347-3.565A7.96 7.96 0 014 12c0-4.418 3.582-8 8-8 4.419 0 8 3.582 8 8s-3.581 8-8 8z"/></svg>
+          Message on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="py-20 sm:py-28 bg-white" id="location">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10 fade-up">
+      <div class="divider-brush mx-auto mb-5"></div>
+      <h2 class="playfair text-3xl sm:text-4xl font-bold text-stone-900 mb-3">
+        Find Us in <span class="italic text-amber-700">Bangalore</span>
+      </h2>
+      <p class="text-stone-500 text-lg">Online classes from the heart of Banashankri, Bangalore</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-10 items-center fade-up">
+      <!-- Map embed -->
+      <div class="rounded-2xl overflow-hidden shadow-xl border border-amber-100 h-80">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3889.0!2d77.5449091!3d12.9416053!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae3f358f87dc55%3A0xd0ea15e40b0539b1!2sAnusha%20Online%20Art%20classes!5e0!3m2!1sen!2sin!4v1234567890"
+          width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <!-- Contact details -->
+      <div class="space-y-5">
+        <div class="flex items-start gap-4 bg-amber-50 rounded-2xl p-5 border border-amber-100">
+          <span class="text-2xl">📍</span>
+          <div>
+            <p class="font-bold text-stone-900 mb-1">Address</p>
+            <p class="text-stone-600">Girinagar, Banashankri, Bangalore – 560085</p>
+            <a href="https://maps.app.goo.gl/VXhgaEVhw493kUt66" target="_blank" class="text-amber-700 text-sm font-semibold mt-1 inline-flex items-center gap-1 hover:underline">
+              Open in Google Maps →
+            </a>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 bg-amber-50 rounded-2xl p-5 border border-amber-100">
+          <span class="text-2xl">📞</span>
+          <div>
+            <p class="font-bold text-stone-900 mb-1">Phone / WhatsApp</p>
+            <a href="tel:+918147717669" class="text-stone-600 hover:text-amber-700 transition-colors">+91 8147717669</a><br/>
+            <a href="tel:+919844520247" class="text-stone-600 hover:text-amber-700 transition-colors">+91 9844520247</a>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 bg-amber-50 rounded-2xl p-5 border border-amber-100">
+          <span class="text-2xl">📱</span>
+          <div>
+            <p class="font-bold text-stone-900 mb-1">UPI / Payment (After Enrollment)</p>
+            <p class="text-stone-600 text-sm">Google Pay / PhonePe / Paytm: <strong>9844520247</strong></p>
+            <p class="text-stone-400 text-xs mt-1">Bank: RBL Bank · A/c: 309001756719 · IFSC: RATN0000072 · Name: Anusha R V</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 bg-amber-50 rounded-2xl p-5 border border-amber-100">
+          <span class="text-2xl">📸</span>
+          <div>
+            <p class="font-bold text-stone-900 mb-1">Instagram</p>
+            <a href="https://instagram.com/anushaonlineartclass" target="_blank" class="text-amber-700 font-semibold hover:underline">@anushaonlineartclass</a>
+          </div>
+        </div>
+        <a href="https://wa.me/918147717669?text=Hi%20Anusha!%20I%20want%20to%20know%20more%20about%20the%20art%20class." target="_blank"
+           class="btn-wa w-full text-white font-bold py-3.5 rounded-xl text-base inline-flex items-center gap-2 justify-center mt-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.587 3.841 1.593 5.395L2 22l4.614-1.57A9.96 9.96 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 12 2zm0 18a7.963 7.963 0 01-4.35-1.3L5 20l1.347-3.565A7.96 7.96 0 014 12c0-4.418 3.582-8 8-8 4.419 0 8 3.582 8 8s-3.581 8-8 8z"/></svg>
+          Message Anusha on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-stone-900 text-stone-400 py-12">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid sm:grid-cols-3 gap-8 mb-10">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-600 to-amber-900 flex items-center justify-center">
+            <span class="text-white font-black text-sm playfair italic">A</span>
+          </div>
+          <div>
+            <p class="playfair font-bold text-base text-white leading-tight">ANUSHA</p>
+            <p class="text-[9px] text-stone-500 uppercase tracking-widest">Online Art Class</p>
+          </div>
+        </div>
+        <p class="text-sm leading-relaxed">Live online art classes from Girinagar, Banashankri, Bangalore. Structured 10-month program for all age groups.</p>
+        <p class="text-xs text-stone-500 mt-3">📍 Bangalore-560085 · @anushaonlineartclass</p>
+      </div>
+      <div>
+        <p class="text-white font-semibold mb-3">Quick Links</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#gallery" class="hover:text-amber-400 transition-colors">Student Gallery</a></li>
+          <li><a href="#syllabus" class="hover:text-amber-400 transition-colors">Syllabus & Phases</a></li>
+          <li><a href="#reviews" class="hover:text-amber-400 transition-colors">Google Reviews</a></li>
+          <li><a href="#about" class="hover:text-amber-400 transition-colors">About Anusha</a></li>
+          <li><a href="#enquiry" class="hover:text-amber-400 transition-colors">Enquire Now</a></li>
+          <li><a href="#location" class="hover:text-amber-400 transition-colors">Location & Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-white font-semibold mb-3">Contact Anusha</p>
+        <div class="space-y-3 text-sm">
+          <a href="https://wa.me/918147717669" target="_blank" class="flex items-center gap-2 hover:text-amber-400 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.587 3.841 1.593 5.395L2 22l4.614-1.57A9.96 9.96 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 12 2zm0 18a7.963 7.963 0 01-4.35-1.3L5 20l1.347-3.565A7.96 7.96 0 014 12c0-4.418 3.582-8 8-8 4.419 0 8 3.582 8 8s-3.581 8-8 8z"/></svg>
+            +91 8147717669 (WhatsApp)
+          </a>
+          <a href="tel:+919844520247" class="flex items-center gap-2 hover:text-amber-400 transition-colors">📞 +91 9844520247</a>
+          <a href="https://instagram.com/anushaonlineartclass" target="_blank" class="flex items-center gap-2 hover:text-amber-400 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            @anushaonlineartclass
+          </a>
+          <a href="https://maps.app.goo.gl/VXhgaEVhw493kUt66" target="_blank" class="flex items-center gap-2 hover:text-amber-400 transition-colors">
+            📍 Girinagar, Banashankri, Bangalore-85
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-stone-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+      <p>© 2025 Anusha Online Art Class, Bangalore. All rights reserved.</p>
+      <p class="text-stone-500">Your success is our victory 🎨</p>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/918147717669?text=Hi%20Anusha!%20I%27m%20interested%20in%20your%20art%20classes!" target="_blank" class="wa-float">
+  <div class="w-14 h-14 rounded-full shadow-2xl flex items-center justify-center relative" style="background:linear-gradient(135deg,#25d366,#128c7e);">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.587 3.841 1.593 5.395L2 22l4.614-1.57A9.96 9.96 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 12 2zm0 18a7.963 7.963 0 01-4.35-1.3L5 20l1.347-3.565A7.96 7.96 0 014 12c0-4.418 3.582-8 8-8 4.419 0 8 3.582 8 8s-3.581 8-8 8z"/></svg>
+    <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold">1</div>
+  </div>
+</a>
+
+<script>
+// SCROLL ANIMATIONS
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+}, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+document.querySelectorAll(".fade-up").forEach(el => obs.observe(el));
+
+// GALLERY LIGHTBOX
+document.querySelectorAll(".gallery-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const img = item.querySelector("img");
+    if (img && img.src && !img.src.includes("data:image/svg")) {
+      document.getElementById("lb-img").src = img.src;
+      document.getElementById("lightbox").classList.add("active");
+    }
+  });
+});
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("active");
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
+
+// FORM SUBMIT
+function handleSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById("f-name").value;
+  const phone = document.getElementById("f-phone").value;
+  document.getElementById("lead-form").style.display = "none";
+  document.getElementById("success-msg").classList.remove("hidden");
+  setTimeout(() => {
+    const msg = encodeURIComponent("Hi Anusha! I\'m " + name + " and I sent an enquiry through your website. My number is " + phone + ". I\'d love to know more about the art class!");
+    window.open("https://wa.me/918147717669?text=" + msg, "_blank");
+  }, 1500);
+}
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener("click", function(e) {
+    e.preventDefault();
+    const t = document.querySelector(this.getAttribute("href"));
+    if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+  });
+});
+</script>
+</body>
+</html>
