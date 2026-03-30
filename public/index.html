@@ -77,28 +77,35 @@
   .urgency-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; display: inline-block; }
   @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.4); } }
 
-  /* Gallery masonry-like grid */
+  /* Gallery - fast CSS grid */
   .gallery-grid {
-    columns: 2;
-    column-gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
-  @media(min-width:640px) { .gallery-grid { columns: 3; } }
-  @media(min-width:1024px) { .gallery-grid { columns: 4; } }
+  @media(min-width:640px)  { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media(min-width:1024px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); } }
   .gallery-item {
-    break-inside: avoid;
-    margin-bottom: 12px;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
+    aspect-ratio: 1;
+    background: #f3e8f8;
+    will-change: transform;
   }
-  .gallery-item img { width: 100%; display: block; transition: transform 0.4s ease; }
-  .gallery-item:hover img { transform: scale(1.04); }
+  .gallery-item canvas {
+    width: 100%; height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+  .gallery-item:hover canvas { transform: scale(1.05); }
   .gallery-item .overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(26,16,8,0.7) 0%, transparent 50%);
-    opacity: 0; transition: opacity 0.3s ease;
-    display: flex; align-items: flex-end; padding: 12px;
+    background: linear-gradient(to top, rgba(44,10,56,0.75) 0%, transparent 55%);
+    opacity: 0; transition: opacity 0.25s ease;
+    display: flex; align-items: flex-end; padding: 10px;
   }
   .gallery-item:hover .overlay { opacity: 1; }
 
@@ -110,7 +117,27 @@
     cursor: pointer;
   }
   #lightbox.active { display: flex; }
-  #lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 12px; object-fit: contain; }
+  #lightbox-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #lb-canvas {
+    max-width: 90vw; max-height: 90vh;
+    border-radius: 12px;
+    display: block;
+  }
+  #lb-close {
+    position: absolute; top: -14px; right: -14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: white; color: #7B2D8B;
+    font-size: 18px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; line-height: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    z-index: 10000;
+  }
 
   /* Google review card */
   .review-card {
@@ -291,687 +318,107 @@
       <p class="text-stone-500 text-lg">Every piece you see was created by our students — beginners who started from scratch.</p>
     </div>
 
-    <!-- Note about student artwork folder -->
-    <div class="bg-purple-100 border border-purple-300 rounded-2xl p-5 mb-8 text-center fade-up">
-      <p class="text-purple-900 font-semibold">📁 25 student artwork images (AOAC1–AOAC25) are displayed below.</p>
-      <p class="text-purple-700 text-sm mt-1">Copy AOAC1.png – AOAC25.png from your Desktop/AOAC folder into public/images/ to show real student work.</p>
-    </div>
+
 
     <div class="gallery-grid fade-up">
-
-      <div class="gallery-item">
-        <img src="/images/AOAC1.png" alt="Oil Painting — Advanced"
-             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC1.png</p>
-          <p class="text-xs text-stone-400">Oil Painting — Advanced</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC1.png" data-label="Oil Painting — Advanced">
+        <canvas data-src="/images/AOAC1.png" width="400" height="400" aria-label="Oil Painting — Advanced"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Oil Painting — Advanced</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC2.png" alt="Lord Krishna — Acrylic"
-             onerror="this.parentElement.style.background='#fde8d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC2.png</p>
-          <p class="text-xs text-stone-400">Lord Krishna — Acrylic</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC2.png" data-label="Lord Krishna — Acrylic">
+        <canvas data-src="/images/AOAC2.png" width="400" height="400" aria-label="Lord Krishna — Acrylic"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Lord Krishna — Acrylic</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC3.png" alt="Shiva Portrait — Detailed"
-             onerror="this.parentElement.style.background='#f0e4d4'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC3.png</p>
-          <p class="text-xs text-stone-400">Shiva Portrait — Detailed</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC3.png" data-label="Shiva Portrait — Detailed">
+        <canvas data-src="/images/AOAC3.png" width="400" height="400" aria-label="Shiva Portrait — Detailed"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Shiva Portrait — Detailed</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC4.png" alt="Lord Krishna — Student Work"
-             onerror="this.parentElement.style.background='#fdf0e0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC4.png</p>
-          <p class="text-xs text-stone-400">Lord Krishna — Student Work</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC4.png" data-label="Lord Krishna — Student Work">
+        <canvas data-src="/images/AOAC4.png" width="400" height="400" aria-label="Lord Krishna — Student Work"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Lord Krishna — Student Work</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC5.png" alt="Madhubani Style"
-             onerror="this.parentElement.style.background='#ede0d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC5.png</p>
-          <p class="text-xs text-stone-400">Madhubani Style</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC5.png" data-label="Madhubani Style">
+        <canvas data-src="/images/AOAC5.png" width="400" height="400" aria-label="Madhubani Style"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Madhubani Style</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC6.png" alt="Pencil Portrait"
-             onerror="this.parentElement.style.background='#f8edd8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC6.png</p>
-          <p class="text-xs text-stone-400">Pencil Portrait</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC6.png" data-label="Pencil Portrait">
+        <canvas data-src="/images/AOAC6.png" width="400" height="400" aria-label="Pencil Portrait"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Pencil Portrait</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC7.png" alt="African Portrait — Mixed"
-             onerror="this.parentElement.style.background='#fce8cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC7.png</p>
-          <p class="text-xs text-stone-400">African Portrait — Mixed</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC7.png" data-label="African Portrait — Mixed">
+        <canvas data-src="/images/AOAC7.png" width="400" height="400" aria-label="African Portrait — Mixed"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">African Portrait — Mixed</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC8.png" alt="Still Life — Oil"
-             onerror="this.parentElement.style.background='#f5dcc8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC8.png</p>
-          <p class="text-xs text-stone-400">Still Life — Oil</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC8.png" data-label="Still Life — Oil">
+        <canvas data-src="/images/AOAC8.png" width="400" height="400" aria-label="Still Life — Oil"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Still Life — Oil</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC9.png" alt="Candle Study — Charcoal"
-             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC9.png</p>
-          <p class="text-xs text-stone-400">Candle Study — Charcoal</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC9.png" data-label="Candle Study — Charcoal">
+        <canvas data-src="/images/AOAC9.png" width="400" height="400" aria-label="Candle Study — Charcoal"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Candle Study — Charcoal</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC10.png" alt="Figure Drawing"
-             onerror="this.parentElement.style.background='#fde8d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC10.png</p>
-          <p class="text-xs text-stone-400">Figure Drawing</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC10.png" data-label="Figure Drawing">
+        <canvas data-src="/images/AOAC10.png" width="400" height="400" aria-label="Figure Drawing"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Figure Drawing</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC11.png" alt="Mandala Art"
-             onerror="this.parentElement.style.background='#f0e4d4'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC11.png</p>
-          <p class="text-xs text-stone-400">Mandala Art</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC11.png" data-label="Mandala Art">
+        <canvas data-src="/images/AOAC11.png" width="400" height="400" aria-label="Mandala Art"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Mandala Art</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC12.png" alt="Portrait from Reference"
-             onerror="this.parentElement.style.background='#fdf0e0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC12.png</p>
-          <p class="text-xs text-stone-400">Portrait from Reference</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC12.png" data-label="Portrait from Reference">
+        <canvas data-src="/images/AOAC12.png" width="400" height="400" aria-label="Portrait from Reference"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Portrait from Reference</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC13.png" alt="Tribal Art — Acrylic"
-             onerror="this.parentElement.style.background='#ede0d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC13.png</p>
-          <p class="text-xs text-stone-400">Tribal Art — Acrylic</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC13.png" data-label="Tribal Art — Acrylic">
+        <canvas data-src="/images/AOAC13.png" width="400" height="400" aria-label="Tribal Art — Acrylic"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Tribal Art — Acrylic</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC14.png" alt="Pencil Sketch"
-             onerror="this.parentElement.style.background='#f8edd8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC14.png</p>
-          <p class="text-xs text-stone-400">Pencil Sketch</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC14.png" data-label="Pencil Sketch">
+        <canvas data-src="/images/AOAC14.png" width="400" height="400" aria-label="Pencil Sketch"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Pencil Sketch</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC15.png" alt="Portrait in Red"
-             onerror="this.parentElement.style.background='#fce8cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC15.png</p>
-          <p class="text-xs text-stone-400">Portrait in Red</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC15.png" data-label="Portrait in Red">
+        <canvas data-src="/images/AOAC15.png" width="400" height="400" aria-label="Portrait in Red"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Portrait in Red</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC16.png" alt="Pencil Portrait Study"
-             onerror="this.parentElement.style.background='#f5dcc8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC16.png</p>
-          <p class="text-xs text-stone-400">Pencil Portrait Study</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC16.png" data-label="Pencil Portrait Study">
+        <canvas data-src="/images/AOAC16.png" width="400" height="400" aria-label="Pencil Portrait Study"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Pencil Portrait Study</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC17.png" alt="Landscape Sketch"
-             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC17.png</p>
-          <p class="text-xs text-stone-400">Landscape Sketch</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC17.png" data-label="Landscape Sketch">
+        <canvas data-src="/images/AOAC17.png" width="400" height="400" aria-label="Landscape Sketch"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Landscape Sketch</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC18.png" alt="Kids Portrait"
-             onerror="this.parentElement.style.background='#fde8d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC18.png</p>
-          <p class="text-xs text-stone-400">Kids Portrait</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC18.png" data-label="Kids Portrait">
+        <canvas data-src="/images/AOAC18.png" width="400" height="400" aria-label="Kids Portrait"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Kids Portrait</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC19.png" alt="Hair Study — Charcoal"
-             onerror="this.parentElement.style.background='#f0e4d4'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC19.png</p>
-          <p class="text-xs text-stone-400">Hair Study — Charcoal</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC19.png" data-label="Hair Study — Charcoal">
+        <canvas data-src="/images/AOAC19.png" width="400" height="400" aria-label="Hair Study — Charcoal"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Hair Study — Charcoal</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC20.png" alt="Framed Artwork"
-             onerror="this.parentElement.style.background='#fdf0e0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC20.png</p>
-          <p class="text-xs text-stone-400">Framed Artwork</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC20.png" data-label="Framed Artwork">
+        <canvas data-src="/images/AOAC20.png" width="400" height="400" aria-label="Framed Artwork"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Framed Artwork</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC21.png" alt="Floral Study"
-             onerror="this.parentElement.style.background='#ede0d0'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC21.png</p>
-          <p class="text-xs text-stone-400">Floral Study</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC21.png" data-label="Floral Study">
+        <canvas data-src="/images/AOAC21.png" width="400" height="400" aria-label="Floral Study"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Floral Study</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC22.png" alt="Dancer Portrait"
-             onerror="this.parentElement.style.background='#f8edd8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC22.png</p>
-          <p class="text-xs text-stone-400">Dancer Portrait</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC22.png" data-label="Dancer Portrait">
+        <canvas data-src="/images/AOAC22.png" width="400" height="400" aria-label="Dancer Portrait"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Dancer Portrait</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC23.png" alt="Figure Sketch — Kids"
-             onerror="this.parentElement.style.background='#fce8cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC23.png</p>
-          <p class="text-xs text-stone-400">Figure Sketch — Kids</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC23.png" data-label="Figure Sketch — Kids">
+        <canvas data-src="/images/AOAC23.png" width="400" height="400" aria-label="Figure Sketch — Kids"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Figure Sketch — Kids</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC24.png" alt="Sketchbook Study"
-             onerror="this.parentElement.style.background='#f5dcc8'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC24.png</p>
-          <p class="text-xs text-stone-400">Sketchbook Study</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC24.png" data-label="Sketchbook Study">
+        <canvas data-src="/images/AOAC24.png" width="400" height="400" aria-label="Sketchbook Study"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Sketchbook Study</p></div>
       </div>
-      <div class="gallery-item">
-        <img src="/images/AOAC25.png" alt="Wildlife — Detailed"
-             onerror="this.parentElement.style.background='#f5e6cc'; this.style.display='none'; this.parentElement.querySelector('.placeholder-text').style.display='flex';"
-             loading="lazy"/>
-        <div class="placeholder-text" style="display:none; aspect-ratio:1; align-items:center; justify-content:center; flex-direction:column; padding:16px; text-align:center;">
-          <p class="text-4xl mb-2">🎨</p>
-          <p class="text-xs font-semibold text-stone-600">AOAC25.png</p>
-          <p class="text-xs text-stone-400">Wildlife — Detailed</p>
-        </div>
-        <div class="wm-badge" style="position:absolute;bottom:8px;right:8px;z-index:10;pointer-events:none;">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5))">
-            <circle cx="50" cy="50" r="46" fill="rgba(123,45,139,0.72)" stroke="white" stroke-width="2.5"/>
-            <path id="topArc" d="M 16,50 A 34,34 0 0,1 84,50" fill="none"/>
-            <path id="botArc" d="M 84,50 A 34,34 0 0,1 16,50" fill="none"/>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#topArc" startOffset="50%" text-anchor="middle">ANUSHA ONLINE</textPath>
-            </text>
-            <text fill="white" font-size="10.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1.2">
-              <textPath href="#botArc" startOffset="50%" text-anchor="middle">ART CLASS</textPath>
-            </text>
-            <text x="50" y="46" text-anchor="middle" font-size="11" font-weight="900" fill="white" font-family="Georgia,serif">AOAC</text>
-            <line x1="28" y1="52" x2="44" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="56" y1="52" x2="72" y2="52" stroke="#F2A999" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="gallery-item" data-src="/images/AOAC25.png" data-label="Wildlife — Detailed">
+        <canvas data-src="/images/AOAC25.png" width="400" height="400" aria-label="Wildlife — Detailed"></canvas>
         <div class="overlay"><p class="text-white text-xs font-semibold">Wildlife — Detailed</p></div>
       </div>
     </div>
@@ -981,7 +428,10 @@
 
 <!-- LIGHTBOX -->
 <div id="lightbox" onclick="closeLightbox()">
-  <img id="lb-img" src="" alt=""/>
+  <div id="lightbox-wrap" onclick="event.stopPropagation()">
+    <div id="lb-close" onclick="closeLightbox()">✕</div>
+    <canvas id="lb-canvas"></canvas>
+  </div>
 </div>
 
 <!-- 4 PHASES -->
@@ -1587,26 +1037,210 @@
 </a>
 
 <script>
-// SCROLL ANIMATIONS
+// ── SCROLL ANIMATIONS ──────────────────────────────────
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
 }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
 document.querySelectorAll(".fade-up").forEach(el => obs.observe(el));
 
-// GALLERY LIGHTBOX
+// ── WATERMARK DRAWING FUNCTION ─────────────────────────
+// Draws the AOAC watermark circle onto a 2D canvas context
+// at position (x, y) with given radius
+function drawWatermark(ctx, x, y, r) {
+  ctx.save();
+
+  // Semi-transparent purple circle
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(123,45,139,0.72)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,0.9)";
+  ctx.lineWidth = r * 0.055;
+  ctx.stroke();
+
+  // "AOAC" centre text
+  ctx.fillStyle = "white";
+  ctx.font = "700 " + (r * 0.32) + "px Georgia,serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("AOAC", x, y - r * 0.06);
+
+  // Peach accent lines flanking text
+  ctx.strokeStyle = "#F2A999";
+  ctx.lineWidth = r * 0.04;
+  ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(x - r * 0.55, y + r * 0.12); ctx.lineTo(x - r * 0.2, y + r * 0.12); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x + r * 0.2,  y + r * 0.12); ctx.lineTo(x + r * 0.55, y + r * 0.12); ctx.stroke();
+
+  // Circular arc text: "ANUSHA ONLINE" top, "ART CLASS" bottom
+  const fontSize = r * 0.22;
+  ctx.font = "700 " + fontSize + "px Georgia,serif";
+  ctx.fillStyle = "white";
+  ctx.textBaseline = "middle";
+
+  // Top arc — "ANUSHA ONLINE"
+  const topText = "ANUSHA ONLINE";
+  const topRadius = r * 0.76;
+  const topAngleStart = -Math.PI * 0.88;
+  const topAngleEnd   = -Math.PI * 0.12;
+  const topStep = (topAngleEnd - topAngleStart) / (topText.length - 1);
+  for (let i = 0; i < topText.length; i++) {
+    const angle = topAngleStart + i * topStep;
+    ctx.save();
+    ctx.translate(x + topRadius * Math.cos(angle), y + topRadius * Math.sin(angle));
+    ctx.rotate(angle + Math.PI / 2);
+    ctx.fillText(topText[i], 0, 0);
+    ctx.restore();
+  }
+
+  // Bottom arc — "ART CLASS"
+  const botText = "ART CLASS";
+  const botRadius = r * 0.76;
+  const botAngleStart = Math.PI * 0.15;
+  const botAngleEnd   = Math.PI * 0.85;
+  const botStep = (botAngleEnd - botAngleStart) / (botText.length - 1);
+  for (let i = 0; i < botText.length; i++) {
+    const angle = botAngleStart + i * botStep;
+    ctx.save();
+    ctx.translate(x + botRadius * Math.cos(angle), y + botRadius * Math.sin(angle));
+    ctx.rotate(angle - Math.PI / 2);
+    ctx.fillText(botText[i], 0, 0);
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+// ── CANVAS GALLERY — fast image + watermark compositing ─
+// Uses IntersectionObserver so images only load when visible
+const imageCache = {};
+
+function loadImageToCanvas(canvas) {
+  const src = canvas.dataset.src;
+  if (!src) return;
+
+  const draw = (imgEl) => {
+    const size = Math.max(canvas.offsetWidth || 400, 1);
+    canvas.width  = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    // Draw image cover-fit
+    const iw = imgEl.naturalWidth  || imgEl.width  || size;
+    const ih = imgEl.naturalHeight || imgEl.height || size;
+    const scale = Math.max(size / iw, size / ih);
+    const dw = iw * scale, dh = ih * scale;
+    const ox = (size - dw) / 2, oy = (size - dh) / 2;
+    ctx.drawImage(imgEl, ox, oy, dw, dh);
+    // Watermark: bottom-right corner, radius = 13% of canvas size
+    const wR = size * 0.13;
+    drawWatermark(ctx, size - wR - size * 0.02, size - wR - size * 0.02, wR);
+  };
+
+  if (imageCache[src]) {
+    draw(imageCache[src]);
+    return;
+  }
+
+  // Show placeholder while loading
+  const size = Math.max(canvas.offsetWidth || 400, 1);
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#f3e8f8";
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = "rgba(123,45,139,0.2)";
+  ctx.font = "bold 32px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("🎨", size/2, size/2);
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => { imageCache[src] = img; draw(img); };
+  img.onerror = () => {
+    // Placeholder on error
+    ctx.fillStyle = "#f3e8f8";
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = "#9B4DBB";
+    ctx.font = "bold 13px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("AOAC", size/2, size/2 - 10);
+    ctx.font = "11px sans-serif";
+    ctx.fillStyle = "#aaa";
+    ctx.fillText(src.split("/").pop(), size/2, size/2 + 14);
+  };
+  img.src = src;
+}
+
+// Lazy-load canvases as they enter viewport
+const canvasObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      loadImageToCanvas(entry.target);
+      canvasObs.unobserve(entry.target);
+    }
+  });
+}, { rootMargin: "200px" }); // 200px ahead = preload before visible
+
+document.querySelectorAll(".gallery-item canvas").forEach(c => canvasObs.observe(c));
+
+// ── LIGHTBOX — with watermark on full-size image ────────
+const lbCanvas = document.getElementById("lb-canvas");
+const lightbox  = document.getElementById("lightbox");
+
 document.querySelectorAll(".gallery-item").forEach(item => {
   item.addEventListener("click", () => {
-    const img = item.querySelector("img");
-    if (img && img.src && !img.src.includes("data:image/svg")) {
-      document.getElementById("lb-img").src = img.src;
-      document.getElementById("lightbox").classList.add("active");
+    const src = item.dataset.src;
+    if (!src) return;
+
+    lightbox.classList.add("active");
+
+    const drawLightbox = (imgEl) => {
+      const maxW = window.innerWidth  * 0.88;
+      const maxH = window.innerHeight * 0.88;
+      const iw = imgEl.naturalWidth  || imgEl.width;
+      const ih = imgEl.naturalHeight || imgEl.height;
+      const scale = Math.min(maxW / iw, maxH / ih, 1);
+      const cw = Math.round(iw * scale);
+      const ch = Math.round(ih * scale);
+      lbCanvas.width  = cw;
+      lbCanvas.height = ch;
+      lbCanvas.style.maxWidth  = "88vw";
+      lbCanvas.style.maxHeight = "88vh";
+      const ctx = lbCanvas.getContext("2d");
+      ctx.drawImage(imgEl, 0, 0, cw, ch);
+      // Watermark: bottom-right, radius = 7% of shortest side
+      const wR = Math.min(cw, ch) * 0.07;
+      drawWatermark(ctx, cw - wR - wR * 0.2, ch - wR - wR * 0.2, wR);
+    };
+
+    if (imageCache[src]) {
+      drawLightbox(imageCache[src]);
+    } else {
+      // Show loading state
+      lbCanvas.width = 300; lbCanvas.height = 300;
+      const ctx = lbCanvas.getContext("2d");
+      ctx.fillStyle = "#1a0a24";
+      ctx.fillRect(0, 0, 300, 300);
+      ctx.fillStyle = "white";
+      ctx.font = "14px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("Loading...", 150, 150);
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => { imageCache[src] = img; drawLightbox(img); };
+      img.src = src;
     }
   });
 });
+
 function closeLightbox() {
-  document.getElementById("lightbox").classList.remove("active");
+  lightbox.classList.remove("active");
 }
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
+lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLightbox(); });
 
 // FORM SUBMIT
 function handleSubmit(e) {
