@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anusha Online Art Class — Girinagar, Bangalore</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
@@ -1317,27 +1318,29 @@
           </div>
           <div>
             <label class="block text-purple-200 text-sm font-medium mb-1.5">Email Address</label>
-            <input type="email" placeholder="priya@gmail.com"
+            <input type="email" id="f-email" placeholder="priya@gmail.com"
               class="w-full bg-white/15 border border-white/25 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm transition-all" />
           </div>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-purple-200 text-sm font-medium mb-1.5">Who's Enrolling?</label>
-              <select class="w-full bg-white/15 border border-white/25 text-white rounded-xl px-4 py-3 text-sm">
+              <select id="f-who"
+                class="w-full bg-white/15 border border-white/25 text-white rounded-xl px-4 py-3 text-sm">
                 <option value="" class="text-stone-800">Select...</option>
-                <option value="myself" class="text-stone-800">Myself (Adult)</option>
-                <option value="child" class="text-stone-800">My Child (Age 6–15)</option>
-                <option value="teen" class="text-stone-800">Teenager (16–18)</option>
-                <option value="senior" class="text-stone-800">Senior / Homemaker</option>
+                <option value="Myself (Adult)" class="text-stone-800">Myself (Adult)</option>
+                <option value="My Child (Age 6–15)" class="text-stone-800">My Child (Age 6–15)</option>
+                <option value="Teenager (16–18)" class="text-stone-800">Teenager (16–18)</option>
+                <option value="Senior / Homemaker" class="text-stone-800">Senior / Homemaker</option>
               </select>
             </div>
             <div>
               <label class="block text-purple-200 text-sm font-medium mb-1.5">Art Experience</label>
-              <select class="w-full bg-white/15 border border-white/25 text-white rounded-xl px-4 py-3 text-sm">
+              <select id="f-exp"
+                class="w-full bg-white/15 border border-white/25 text-white rounded-xl px-4 py-3 text-sm">
                 <option value="" class="text-stone-800">Select...</option>
-                <option value="beginner" class="text-stone-800">Complete Beginner</option>
-                <option value="some" class="text-stone-800">Some Experience</option>
-                <option value="intermediate" class="text-stone-800">Intermediate</option>
+                <option value="Complete Beginner" class="text-stone-800">Complete Beginner</option>
+                <option value="Some Experience" class="text-stone-800">Some Experience</option>
+                <option value="Intermediate" class="text-stone-800">Intermediate</option>
               </select>
             </div>
           </div>
@@ -1345,19 +1348,19 @@
             <label class="block text-purple-200 text-sm font-medium mb-1.5">Preferred Class Time</label>
             <div class="grid grid-cols-3 gap-2">
               <label class="cursor-pointer">
-                <input type="radio" name="time" value="morning" class="sr-only peer" />
+                <input type="radio" name="time" value="Morning (7–10 AM)" class="sr-only peer" />
                 <div
                   class="peer-checked:bg-purple-500 peer-checked:border-purple-300 bg-white/10 border border-white/20 rounded-xl px-2 py-2.5 text-center text-white text-xs font-medium transition-all hover:bg-white/20">
                   🌅 Morning<br /><span class="text-white/50">7–10 AM</span></div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="time" value="evening" class="sr-only peer" checked />
+                <input type="radio" name="time" value="Evening (5–8 PM)" class="sr-only peer" checked />
                 <div
                   class="peer-checked:bg-purple-500 peer-checked:border-purple-300 bg-white/10 border border-white/20 rounded-xl px-2 py-2.5 text-center text-white text-xs font-medium transition-all hover:bg-white/20">
                   🌆 Evening<br /><span class="text-white/50">5–8 PM</span></div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="time" value="weekend" class="sr-only peer" />
+                <input type="radio" name="time" value="Weekend (Flexible)" class="sr-only peer" />
                 <div
                   class="peer-checked:bg-purple-500 peer-checked:border-purple-300 bg-white/10 border border-white/20 rounded-xl px-2 py-2.5 text-center text-white text-xs font-medium transition-all hover:bg-white/20">
                   🌞 Weekend<br /><span class="text-white/50">Flexible</span></div>
@@ -1366,14 +1369,19 @@
           </div>
           <div>
             <label class="block text-purple-200 text-sm font-medium mb-1.5">Any Questions or Message</label>
-            <textarea rows="2" placeholder="e.g. I'm interested in the kids program, my daughter is 9 years old..."
+            <textarea id="f-msg" rows="2"
+              placeholder="e.g. I'm interested in the kids program, my daughter is 9 years old..."
               class="w-full bg-white/15 border border-white/25 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm transition-all resize-none"></textarea>
           </div>
-          <button type="submit" class="btn-gold w-full text-white font-bold py-4 rounded-xl text-base mt-2">
+          <button type="submit" id="submit-btn"
+            class="btn-gold w-full text-white font-bold py-4 rounded-xl text-base mt-2">
             🎨 Send Enquiry — Anusha Will Reach Out
           </button>
-          <p class="text-center text-purple-300/70 text-xs">Anusha will personally call/WhatsApp you within 24 hours to
-            discuss fees, schedule & batch details.</p>
+          <div id="submit-error" class="hidden text-center text-red-300 text-xs bg-red-900/30 rounded-xl py-2 px-3">
+            ⚠️ Could not send email. Please WhatsApp us directly at +91 8147717669
+          </div>
+          <p class="text-center text-purple-300/70 text-xs">Anusha & Team will personally call/WhatsApp you within 24
+            hours to discuss fees, schedule & batch details.</p>
         </form>
         <div id="success-msg" class="hidden text-center py-10">
           <div class="text-5xl mb-4">🎉</div>
@@ -1762,17 +1770,79 @@
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
     lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLightbox(); });
 
-    // FORM SUBMIT
+    // ── EMAILJS INIT ───────────────────────────────────────
+    // Replace YOUR_PUBLIC_KEY with your EmailJS public key
+    emailjs.init({ publicKey: "YOUR_PUBLIC_KEY" });
+
+    // ── FORM SUBMIT ────────────────────────────────────────
     function handleSubmit(e) {
       e.preventDefault();
-      const name = document.getElementById("f-name").value;
-      const phone = document.getElementById("f-phone").value;
-      document.getElementById("lead-form").style.display = "none";
-      document.getElementById("success-msg").classList.remove("hidden");
-      setTimeout(() => {
-        const msg = encodeURIComponent("Hi Anusha! I\'m " + name + " and I sent an enquiry through your website. My number is " + phone + ". I\'d love to know more about the art class!");
-        window.open("https://wa.me/918147717669?text=" + msg, "_blank");
-      }, 1500);
+
+      const name = document.getElementById("f-name").value.trim();
+      const phone = document.getElementById("f-phone").value.trim();
+      const email = document.getElementById("f-email").value.trim();
+      const who = document.getElementById("f-who").value;
+      const exp = document.getElementById("f-exp").value;
+      const time = document.querySelector('input[name="time"]:checked')?.value || "Not selected";
+      const msg = document.getElementById("f-msg").value.trim();
+
+      const btn = document.getElementById("submit-btn");
+      const errBox = document.getElementById("submit-error");
+      btn.disabled = true;
+      btn.textContent = "⏳ Sending...";
+      errBox.classList.add("hidden");
+
+      // Template parameters — must match your EmailJS template variables
+      const templateParams = {
+        from_name: name,
+        phone: phone,
+        email: email || "Not provided",
+        who: who || "Not specified",
+        experience: exp || "Not specified",
+        class_time: time,
+        message: msg || "No message",
+        to_email: "anushaonlineartclass@gmail.com",   // ← Anusha's Gmail
+        reply_to: email || phone,
+      };
+
+      // Send via EmailJS
+      // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID below
+      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+        .then(() => {
+          // Success — show thank you screen
+          document.getElementById("lead-form").style.display = "none";
+          document.getElementById("success-msg").classList.remove("hidden");
+
+          // Also auto-open WhatsApp with full summary
+          setTimeout(() => {
+            const waMsg = encodeURIComponent(
+              "Hi Anusha & Team! 🎨\n\n" +
+              "New enquiry from your website:\n" +
+              "Name: " + name + "\n" +
+              "Phone: " + phone + "\n" +
+              "Email: " + (email || "Not provided") + "\n" +
+              "Enrolling: " + (who || "Not specified") + "\n" +
+              "Experience: " + (exp || "Not specified") + "\n" +
+              "Preferred time: " + time + "\n" +
+              "Message: " + (msg || "None") + "\n\n" +
+              "I'd love to know more about the art class!"
+            );
+            window.open("https://wa.me/918147717669?text=" + waMsg, "_blank");
+          }, 1200);
+        })
+        .catch((err) => {
+          console.error("EmailJS error:", err);
+          // Show error — still open WhatsApp as fallback
+          btn.disabled = false;
+          btn.textContent = "🎨 Send Enquiry — Anusha Will Reach Out";
+          errBox.classList.remove("hidden");
+          setTimeout(() => {
+            const waMsg = encodeURIComponent(
+              "Hi Anusha & Team! 🎨\n\nNew enquiry:\nName: " + name + "\nPhone: " + phone + "\nMessage: " + (msg || "None")
+            );
+            window.open("https://wa.me/918147717669?text=" + waMsg, "_blank");
+          }, 800);
+        });
     }
 
     // SMOOTH SCROLL
